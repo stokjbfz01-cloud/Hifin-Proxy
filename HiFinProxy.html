@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiFin PROXY - Panel</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 20% 10%, rgba(168, 85, 247, 0.28), transparent 30%),
+                radial-gradient(circle at 85% 90%, rgba(124, 58, 237, 0.24), transparent 32%),
+                linear-gradient(135deg, #090612 0%, #12081f 45%, #08050f 100%);
+            color: #e9ddff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 22px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            inset: -35%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::before {
+            background:
+                radial-gradient(
+                    ellipse at 25% 35%,
+                    rgba(192, 132, 252, 0.22),
+                    transparent 20%
+                ),
+                radial-gradient(
+                    ellipse at 75% 65%,
+                    rgba(139, 92, 246, 0.18),
+                    transparent 24%
+                );
+            filter: blur(35px);
+            animation: waterGlow 9s ease-in-out infinite alternate;
+        }
+
+        body::after {
+            background:
+                linear-gradient(
+                    115deg,
+                    transparent 42%,
+                    rgba(255,255,255,.055) 48%,
+                    transparent 54%
+                ),
+                linear-gradient(
+                    70deg,
+                    transparent 38%,
+                    rgba(216,180,254,.04) 48%,
+                    transparent 58%
+                );
+            background-size: 180% 180%, 220% 220%;
+            animation: waterShimmer 11s linear infinite;
+            opacity: .8;
+        }
+
+        @keyframes waterGlow {
+            0% {
+                transform: translate3d(-3%, -2%, 0) scale(1);
+            }
+
+            50% {
+                transform: translate3d(3%, 2%, 0) scale(1.06);
+            }
+
+            100% {
+                transform: translate3d(-1%, 4%, 0) scale(1.02);
+            }
+        }
+
+        @keyframes waterShimmer {
+            0% {
+                background-position: 0% 50%, 100% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%, 0% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%, 100% 50%;
+            }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(31, 16, 52, .94),
+                    rgba(13, 8, 23, .96)
+                );
+
+            border: 1px solid rgba(192, 132, 252, .28);
+            border-radius: 22px;
+            padding: 24px;
+
+            position: relative;
+            z-index: 1;
+
+            box-shadow:
+                0 18px 55px rgba(0, 0, 0, .45),
+                0 0 35px rgba(168, 85, 247, .08);
+        }
+
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 12%;
+            right: 12%;
+            height: 1px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(216,180,254,.75),
+                    transparent
+                );
+
+            box-shadow:
+                0 0 18px rgba(192,132,252,.7);
+        }
+
+        .status-header {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(168,85,247,.18),
+                    rgba(124,58,237,.10)
+                );
+
+            border: 1px solid rgba(192,132,252,.35);
+            color: #d8b4fe;
+
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .7px;
+
+            padding: 7px 14px;
+            border-radius: 999px;
+            margin-bottom: 13px;
+
+            box-shadow:
+                0 0 20px rgba(168,85,247,.08);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #c084fc;
+            border-radius: 50%;
+
+            box-shadow:
+                0 0 12px #c084fc;
+
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: .55;
+                transform: scale(.78);
+            }
+        }
+
+        .title {
+            font-size: clamp(25px, 7vw, 31px);
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: .3px;
+
+            text-shadow:
+                0 0 22px rgba(192,132,252,.25);
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: #aa98bd;
+            margin-top: 7px;
+            line-height: 1.5;
+        }
+
+        .card {
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(18,10,31,.82),
+                    rgba(29,15,47,.64)
+                );
+
+            border: 1px solid rgba(168,85,247,.17);
+            border-radius: 15px;
+            padding: 16px;
+            margin-bottom: 16px;
+
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,.025);
+        }
+
+        .card-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #a78bfa;
+            letter-spacing: 1px;
+            margin-bottom: 11px;
+        }
+
+        .device-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 14px;
+
+            padding: 9px 0;
+
+            border-bottom:
+                1px solid rgba(139,92,246,.10);
+
+            font-size: 12px;
+        }
+
+        .device-item:last-child {
+            border-bottom: none;
+            padding-bottom: 1px;
+        }
+
+        .device-item:first-of-type {
+            padding-top: 3px;
+        }
+
+        .device-item .label {
+            color: #8f7e9f;
+            flex-shrink: 0;
+        }
+
+        .device-item .value {
+            font-weight: 500;
+            color: #e5d5f7;
+
+            word-break: break-all;
+            text-align: right;
+        }
+
+        /* =========================
+           FEATURE SWITCH
+        ========================= */
+
+        .feature-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .feature-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+
+            padding: 10px 0;
+
+            border-bottom:
+                1px solid rgba(139,92,246,.10);
+
+            color: #cdb9df;
+            font-size: 12px;
+        }
+
+        .feature-item:last-child {
+            border-bottom: none;
+            padding-bottom: 2px;
+        }
+
+        .feature-name {
+            font-weight: 600;
+        }
+
+        .feature-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+            display: inline-block;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+
+        .slider {
+            position: absolute;
+            inset: 0;
+
+            cursor: pointer;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #251633,
+                    #3b2a4d
+                );
+
+            border: 1px solid rgba(192,132,252,.25);
+            border-radius: 999px;
+
+            transition:
+                .25s ease;
+
+            box-shadow:
+                inset 0 1px 2px rgba(0,0,0,.35);
+        }
+
+        .slider::before {
+            content: "";
+
+            position: absolute;
+
+            width: 18px;
+            height: 18px;
+
+            left: 2px;
+            top: 2px;
+
+            background: #eee7f7;
+            border-radius: 50%;
+
+            transition:
+                .25s ease;
+
+            box-shadow:
+                0 2px 7px rgba(0,0,0,.35);
+        }
+
+        .switch input:checked + .slider {
+            background:
+                linear-gradient(
+                    135deg,
+                    #7c3aed,
+                    #a855f7
+                );
+
+            border-color:
+                rgba(216,180,254,.55);
+
+            box-shadow:
+                0 0 14px rgba(168,85,247,.35),
+                inset 0 1px 0 rgba(255,255,255,.15);
+        }
+
+        .switch input:checked + .slider::before {
+            transform: translateX(20px);
+            background: #fff;
+        }
+
+        .switch-label {
+            min-width: 22px;
+            font-size: 9px;
+            font-weight: 800;
+            color: #806e91;
+            transition: .25s ease;
+        }
+
+        .switch input:checked
+        ~ .switch-label {
+            color: #d8b4fe;
+        }
+
+        .info-box {
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(168,85,247,.10),
+                    rgba(126,34,206,.07)
+                );
+
+            border: 1px solid rgba(192,132,252,.20);
+            border-radius: 15px;
+
+            padding: 14px;
+            margin-bottom: 16px;
+
+            font-size: 12px;
+            color: #cdb9df;
+            line-height: 1.55;
+        }
+
+        .info-box strong:first-child {
+            color: #d8b4fe;
+        }
+
+        .info-box .disclaimer {
+            margin-top: 9px;
+            color: #f0a6c8;
+        }
+
+        .community-box {
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(124,58,237,.11),
+                    rgba(168,85,247,.06)
+                );
+
+            border: 1px solid rgba(167,139,250,.19);
+            border-radius: 15px;
+
+            padding: 14px;
+            margin-bottom: 18px;
+
+            font-size: 12px;
+            color: #bda9cf;
+            line-height: 1.55;
+        }
+
+        .community-box strong {
+            color: #c4b5fd;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 11px;
+        }
+
+        .btn {
+            width: 100%;
+            min-height: 49px;
+
+            padding: 12px 10px;
+
+            border: 1px solid rgba(255,255,255,.10);
+            border-radius: 12px;
+
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .1px;
+
+            cursor: pointer;
+
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease,
+                filter .2s ease;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+
+            color: #fff;
+            text-decoration: none;
+            text-align: center;
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: "";
+
+            position: absolute;
+            top: -120%;
+            left: -45%;
+
+            width: 35%;
+            height: 340%;
+
+            background: rgba(255,255,255,.18);
+
+            transform: rotate(25deg);
+
+            transition:
+                left .55s ease;
+        }
+
+        .btn:hover::before {
+            left: 125%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.08);
+        }
+
+        .btn:active {
+            transform: scale(.97);
+        }
+
+        .btn-wa {
+            background:
+                linear-gradient(
+                    135deg,
+                    #7c3aed,
+                    #a855f7
+                );
+
+            border-color:
+                rgba(216,180,254,.32);
+
+            box-shadow:
+                0 9px 24px rgba(124,58,237,.18);
+        }
+
+        .btn-wa-group {
+            background:
+                linear-gradient(
+                    135deg,
+                    #5b21b6,
+                    #8b5cf6
+                );
+
+            border-color:
+                rgba(196,181,253,.28);
+
+            box-shadow:
+                0 9px 24px rgba(91,33,182,.18);
+        }
+
+        .btn-download {
+            grid-column: 1 / -1;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6d28d9,
+                    #9333ea,
+                    #c026d3,
+                    #8b5cf6
+                );
+
+            background-size: 250% 250%;
+
+            border-color:
+                rgba(216,180,254,.45);
+
+            min-height: 54px;
+
+            font-size: 13px;
+            letter-spacing: .5px;
+
+            box-shadow:
+                0 12px 32px rgba(126,34,206,.28),
+                inset 0 1px 0 rgba(255,255,255,.15);
+
+            animation:
+                downloadGradient 5s ease infinite;
+        }
+
+        .btn-download:hover {
+            box-shadow:
+                0 14px 38px rgba(168,85,247,.38),
+                0 0 22px rgba(192,132,252,.15);
+        }
+
+        .download-icon {
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .download-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 1.2;
+        }
+
+        .download-main {
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .download-sub {
+            font-size: 9px;
+            font-weight: 500;
+            opacity: .72;
+            margin-top: 2px;
+        }
+
+        @keyframes downloadGradient {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .msg-box {
+            text-align: center;
+            font-size: 13px;
+
+            margin-top: 12px;
+            padding: 10px;
+
+            border-radius: 8px;
+            display: none;
+        }
+
+        .msg-box.success {
+            display: block;
+
+            background:
+                rgba(168,85,247,.10);
+
+            border:
+                1px solid rgba(168,85,247,.25);
+
+            color: #d8b4fe;
+        }
+
+        @media (max-width: 390px) {
+
+            body {
+                padding: 14px;
+            }
+
+            .container {
+                padding: 18px;
+            }
+
+            .actions {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-download {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="status-header">
+
+            <div class="status-badge">
+                <span class="status-dot"></span>
+                <span>SERVER ONLINE</span>
+            </div>
+
+            <div class="title">
+                HiFin PROXY
+            </div>
+
+            <div class="subtitle">
+                Proxy Anda siap digunakan.
+            </div>
+
+        </div>
+
+
+        <!-- DEVICE INFO -->
+        <div class="card">
+
+            <div class="card-title">
+                INFORMASI PERANGKAT ANDA
+            </div>
+
+            <div class="device-item">
+                <span class="label">IP Address</span>
+                <span class="value" id="deviceIp">-</span>
+            </div>
+
+            <div class="device-item">
+                <span class="label">Device</span>
+                <span class="value" id="deviceName">-</span>
+            </div>
+
+            <div class="device-item">
+                <span class="label">Platform</span>
+                <span class="value" id="devicePlatform">-</span>
+            </div>
+
+            <div class="device-item">
+                <span class="label">Browser</span>
+                <span class="value" id="deviceUa">-</span>
+            </div>
+
+        </div>
+
+
+        <!-- FEATURE -->
+        <div class="info-box">
+
+            <strong>FITUR CHEAT:</strong>
+
+            <ul class="feature-list">
+
+                <li class="feature-item">
+                    <span class="feature-name">
+                        Dada Hs Brutal
+                    </span>
+
+                    <div class="feature-status">
+
+                        <label class="switch">
+                            <input
+                                type="checkbox"
+                                id="headshotToggle"
+                            >
+                            <span class="slider"></span>
+                        </label>
+
+                        <span
+                            class="switch-label"
+                            id="headshotStatus"
+                        >
+                            OFF
+                        </span>
+
+                    </div>
+                </li>
+
+
+                <li class="feature-item">
+                    <span class="feature-name">
+                        Unlock Sensi
+                    </span>
+
+                    <div class="feature-status">
+
+                        <label class="switch">
+                            <input
+                                type="checkbox"
+                                id="sensiToggle"
+                            >
+                            <span class="slider"></span>
+                        </label>
+
+                        <span
+                            class="switch-label"
+                            id="sensiStatus"
+                        >
+                            OFF
+                        </span>
+
+                    </div>
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <!-- COMMUNITY -->
+        <div class="community-box">
+
+            <strong>
+                JOIN SALURAN & KOMUNITAS HiFin:
+            </strong>
+
+            <div style="margin-top: 4px;">
+                Join Saluran & Komunitas HiFin Mods Untuk Mendapatkan Info Update Mod Ataupun Berbagi Pengalaman Antar Pengguna.
+            </div>
+
+        </div>
+
+
+        <!-- ACTIONS -->
+        <div class="actions">
+
+            <a
+                href="https://chat.whatsapp.com/LN7T3pDVZppDDKgrbd0uXE"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-wa-group"
+            >
+                <span>CHAT GROUP</span>
+            </a>
+
+
+            <a
+                href="https://whatsapp.com/channel/0029VbCCbN9AojYwc7gebK3D"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-wa"
+            >
+                <span>INFO UPDATE MODS</span>
+            </a>
+
+
+            <!-- DOWNLOAD -->
+            <a
+    href="https://move2link.co/71657e7"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="btn btn-download"
+>
+    <span class="download-icon">
+        ⇩
+    </span>
+
+    <span class="download-text">
+        <span class="download-main">
+            DOWNLOAD LocalConfig.json
+        </span>
+
+        <span class="download-sub">
+            Klik Disini Jika Belum Punya localconfig nya
+        </span>
+    </span>
+</a>
+
+        </div>
+
+
+        <div
+            id="msgBox"
+            class="msg-box"
+        ></div>
+
+    </div>
+
+
+    <script>
+
+        /* =========================
+           DEVICE INFO
+        ========================= */
+
+        async function fetchDeviceInfo() {
+
+            try {
+
+                const res = await fetch('/api/device');
+
+                const data = await res.json();
+
+                document.getElementById('deviceIp').textContent =
+                    data.ip || '127.0.0.1';
+
+                document.getElementById('deviceName').textContent =
+                    data.device || 'Android';
+
+                document.getElementById('devicePlatform').textContent =
+                    data.platform || 'Linux armv8l';
+
+                document.getElementById('deviceUa').textContent =
+                    data.userAgent || navigator.userAgent;
+
+            } catch (e) {
+
+                document.getElementById('deviceIp').textContent =
+                    '127.0.0.1';
+
+                document.getElementById('deviceName').textContent =
+                    navigator.platform;
+
+                document.getElementById('devicePlatform').textContent =
+                    navigator.userAgentData
+                        ? navigator.userAgentData.platform
+                        : 'Mobile';
+
+                document.getElementById('deviceUa').textContent =
+                    navigator.userAgent;
+
+            }
+
+        }
+
+
+        /* =========================
+           FEATURE SWITCH UI
+        ========================= */
+
+        const headshotToggle =
+            document.getElementById('headshotToggle');
+
+        const sensiToggle =
+            document.getElementById('sensiToggle');
+
+        const headshotStatus =
+            document.getElementById('headshotStatus');
+
+        const sensiStatus =
+            document.getElementById('sensiStatus');
+
+
+        function updateSwitchStatus(
+            toggle,
+            status
+        ) {
+
+            if (toggle.checked) {
+
+                status.textContent = 'ON';
+
+            } else {
+
+                status.textContent = 'OFF';
+
+            }
+
+        }
+
+
+        headshotToggle.addEventListener(
+            'change',
+            function () {
+
+                updateSwitchStatus(
+                    headshotToggle,
+                    headshotStatus
+                );
+
+            }
+        );
+
+
+        sensiToggle.addEventListener(
+            'change',
+            function () {
+
+                updateSwitchStatus(
+                    sensiToggle,
+                    sensiStatus
+                );
+
+            }
+        );
+
+
+        /* =========================
+           INITIALIZE
+        ========================= */
+
+        document.addEventListener(
+            'DOMContentLoaded',
+            fetchDeviceInfo
+        );
+
+    </script>
+
+</body>
+</html>
