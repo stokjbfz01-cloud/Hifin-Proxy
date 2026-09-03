@@ -741,7 +741,7 @@
 
                 <li class="feature-item">
                     <span class="feature-name">
-                        Silent Aim + Champs
+                        Aim Silent + Champs
                     </span>
 
                     <div class="feature-status">
@@ -764,8 +764,6 @@
                     </div>
                 </li>
 
-
-                
 
             </ul>
 
@@ -1027,14 +1025,8 @@
     const headshotToggle =
         document.getElementById('headshotToggle');
 
-    const sensiToggle =
-        document.getElementById('sensiToggle');
-
     const headshotStatus =
-        document.getElementById('headshotStatus');
-
-    const sensiStatus =
-        document.getElementById('sensiStatus');
+    document.getElementById('headshotStatus');
 
 
     function updateSwitchStatus(
@@ -1063,19 +1055,7 @@
     );
 
 
-    sensiToggle.addEventListener(
-        'change',
-        function () {
-
-            updateSwitchStatus(
-                sensiToggle,
-                sensiStatus
-            );
-
-        }
-    );
-
-
+   
     /* =========================
        INITIALIZE
     ========================= */
