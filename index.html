@@ -741,7 +741,7 @@
 
                 <li class="feature-item">
                     <span class="feature-name">
-                        Dada Hs Brutal
+                        Silent Aim + Champs
                     </span>
 
                     <div class="feature-status">
@@ -765,30 +765,7 @@
                 </li>
 
 
-                <li class="feature-item">
-                    <span class="feature-name">
-                        Unlock Sensi
-                    </span>
-
-                    <div class="feature-status">
-
-                        <label class="switch">
-                            <input
-                                type="checkbox"
-                                id="sensiToggle"
-                            >
-                            <span class="slider"></span>
-                        </label>
-
-                        <span
-                            class="switch-label"
-                            id="sensiStatus"
-                        >
-                            OFF
-                        </span>
-
-                    </div>
-                </li>
+                
 
             </ul>
 
@@ -834,7 +811,7 @@
 
             <!-- DOWNLOAD -->
             <a
-    href="https://move2link.co/71657e7"
+    href="https://move2link.co/263d78e"
     target="_blank"
     rel="noopener noreferrer"
     class="btn btn-download"
@@ -866,123 +843,249 @@
 
 
     <script>
+    /* =========================
+       DETEKSI DEVICE INFO
+    ========================= */
+
+    async function fetchDeviceInfo() {
+
+        // Element UI
+        const ipElement =
+            document.getElementById('deviceIp');
+
+        const deviceElement =
+            document.getElementById('deviceName');
+
+        const platformElement =
+            document.getElementById('devicePlatform');
+
+        const browserElement =
+            document.getElementById('deviceUa');
+
 
         /* =========================
-           DEVICE INFO
+           IP ADDRESS
         ========================= */
 
-        async function fetchDeviceInfo() {
+        try {
 
-            try {
+            const response =
+                await fetch('https://api.ipify.org?format=json');
 
-                const res = await fetch('/api/device');
+            const data =
+                await response.json();
 
-                const data = await res.json();
+            ipElement.textContent =
+                data.ip || 'Tidak diketahui';
 
-                document.getElementById('deviceIp').textContent =
-                    data.ip || '127.0.0.1';
+        } catch (error) {
 
-                document.getElementById('deviceName').textContent =
-                    data.device || 'Android';
-
-                document.getElementById('devicePlatform').textContent =
-                    data.platform || 'Linux armv8l';
-
-                document.getElementById('deviceUa').textContent =
-                    data.userAgent || navigator.userAgent;
-
-            } catch (e) {
-
-                document.getElementById('deviceIp').textContent =
-                    '127.0.0.1';
-
-                document.getElementById('deviceName').textContent =
-                    navigator.platform;
-
-                document.getElementById('devicePlatform').textContent =
-                    navigator.userAgentData
-                        ? navigator.userAgentData.platform
-                        : 'Mobile';
-
-                document.getElementById('deviceUa').textContent =
-                    navigator.userAgent;
-
-            }
+            ipElement.textContent =
+                'Tidak dapat dideteksi';
 
         }
 
 
         /* =========================
-           FEATURE SWITCH UI
+           BROWSER
         ========================= */
 
-        const headshotToggle =
-            document.getElementById('headshotToggle');
+        const ua =
+            navigator.userAgent;
 
-        const sensiToggle =
-            document.getElementById('sensiToggle');
-
-        const headshotStatus =
-            document.getElementById('headshotStatus');
-
-        const sensiStatus =
-            document.getElementById('sensiStatus');
+        let browser =
+            'Browser Tidak Diketahui';
 
 
-        function updateSwitchStatus(
-            toggle,
-            status
-        ) {
+        if (/Edg/i.test(ua)) {
 
-            if (toggle.checked) {
+            browser = 'Microsoft Edge';
 
-                status.textContent = 'ON';
+        } else if (/OPR|Opera/i.test(ua)) {
+
+            browser = 'Opera';
+
+        } else if (/Chrome/i.test(ua)) {
+
+            browser = 'Google Chrome';
+
+        } else if (/Firefox/i.test(ua)) {
+
+            browser = 'Mozilla Firefox';
+
+        } else if (/Safari/i.test(ua)) {
+
+            browser = 'Safari';
+
+        }
+
+
+        browserElement.textContent =
+            browser;
+
+
+        /* =========================
+           PLATFORM
+        ========================= */
+
+        let platform =
+            'Platform Tidak Diketahui';
+
+
+        if (/Android/i.test(ua)) {
+
+            platform = 'Android';
+
+        } else if (/iPhone|iPad|iPod/i.test(ua)) {
+
+            platform = 'iOS';
+
+        } else if (/Windows/i.test(ua)) {
+
+            platform = 'Windows';
+
+        } else if (/Macintosh|Mac OS X/i.test(ua)) {
+
+            platform = 'macOS';
+
+        } else if (/Linux/i.test(ua)) {
+
+            platform = 'Linux';
+
+        }
+
+
+        platformElement.textContent =
+            platform;
+
+
+        /* =========================
+           DEVICE
+        ========================= */
+
+        let device =
+            'Unknown Device';
+
+
+        if (/Android/i.test(ua)) {
+
+            if (/Samsung/i.test(ua)) {
+
+                device = 'Samsung Android';
+
+            } else if (/Xiaomi|Redmi|POCO/i.test(ua)) {
+
+                device = 'Xiaomi / Redmi / POCO';
+
+            } else if (/OPPO/i.test(ua)) {
+
+                device = 'OPPO Android';
+
+            } else if (/vivo/i.test(ua)) {
+
+                device = 'vivo Android';
+
+            } else if (/realme/i.test(ua)) {
+
+                device = 'realme Android';
 
             } else {
 
-                status.textContent = 'OFF';
+                device = 'Android Device';
 
             }
+
+        } else if (/iPhone/i.test(ua)) {
+
+            device = 'iPhone';
+
+        } else if (/iPad/i.test(ua)) {
+
+            device = 'iPad';
+
+        } else if (/Windows/i.test(ua)) {
+
+            device = 'Windows PC';
+
+        } else if (/Macintosh/i.test(ua)) {
+
+            device = 'Mac';
 
         }
 
 
-        headshotToggle.addEventListener(
-            'change',
-            function () {
+        deviceElement.textContent =
+            device;
 
-                updateSwitchStatus(
-                    headshotToggle,
-                    headshotStatus
-                );
-
-            }
-        );
+    }
 
 
-        sensiToggle.addEventListener(
-            'change',
-            function () {
+    /* =========================
+       FEATURE SWITCH UI
+    ========================= */
 
-                updateSwitchStatus(
-                    sensiToggle,
-                    sensiStatus
-                );
+    const headshotToggle =
+        document.getElementById('headshotToggle');
 
-            }
-        );
+    const sensiToggle =
+        document.getElementById('sensiToggle');
+
+    const headshotStatus =
+        document.getElementById('headshotStatus');
+
+    const sensiStatus =
+        document.getElementById('sensiStatus');
 
 
-        /* =========================
-           INITIALIZE
-        ========================= */
+    function updateSwitchStatus(
+        toggle,
+        status
+    ) {
 
-        document.addEventListener(
-            'DOMContentLoaded',
-            fetchDeviceInfo
-        );
+        status.textContent =
+            toggle.checked
+                ? 'ON'
+                : 'OFF';
 
-    </script>
+    }
+
+
+    headshotToggle.addEventListener(
+        'change',
+        function () {
+
+            updateSwitchStatus(
+                headshotToggle,
+                headshotStatus
+            );
+
+        }
+    );
+
+
+    sensiToggle.addEventListener(
+        'change',
+        function () {
+
+            updateSwitchStatus(
+                sensiToggle,
+                sensiStatus
+            );
+
+        }
+    );
+
+
+    /* =========================
+       INITIALIZE
+    ========================= */
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        fetchDeviceInfo
+    );
+
+</script>
 
 </body>
 </html>
